@@ -1,6 +1,6 @@
 SudokuSolver::Application.routes.draw do
-  get "puzzle/home"
-  get "puzzle/solve"
+  root to: "puzzle#home"
+  post "solve", to: "puzzle#solve"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
