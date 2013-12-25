@@ -34,7 +34,23 @@ describe Puzzle do
 
     end
 
-    pending "refresh possibilities should run until no more cells are solved" do
+    describe "refresh possibilities should run until no more cells are solved" do
+      before do
+        @input = [9,7,6,5,4,3,0,2,6] + [0]*8 + [7] + [0]*17 + [5] + [0]*8 \
+          + [4] + [0]*8 + [3] + [0]*8 + [2] + [0]*8 + [1,1,2,3,4,5,6,7,8,0]
+        @puzzle = Puzzle.new(@input)
+        puts "test"
+        @puzzle.solve
+        puts "test"
+      end
+
+      its(:output) do
+        output = @input
+        output[6] = 1
+        output[26] = 8
+        output[80] = 9
+        should eq output
+      end
 
     end
 

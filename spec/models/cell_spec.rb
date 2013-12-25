@@ -12,7 +12,6 @@ describe Cell do
   it { should respond_to :value }
   it { should respond_to :possibilities }
   it { should respond_to :forbidden_values }
-  pending { should respond_to :update_possibilities }
   it { should respond_to :solved? }
 
   its(:row) { should eq 3 }

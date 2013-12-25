@@ -27,22 +27,26 @@ class Puzzle
 
   def solve
     # apply algorithms here
-    refresh_possibilities
+    while refresh_possibilities
+    end
   end
 
   private
 
   # goes through each cell in the puzzle, eliminates impossible
-  # values from the possibilities array, and if only a single
-  # value remains,
+  # values from the possibilities array; if the algorithm
+  # successfully identifies the value of any cells, return true
   def refresh_possibilities
+    success = false
     @cells.each do |cell|
       if cell.value == 0
         id = cell.id
         forbidden_values = (get_row_values id) + (get_column_values id) + (get_square_values id)
         cell.forbidden_values(forbidden_values)
+        success = true if cell.value != 0
       end
     end
+    success
   end
 
   def get_row_values(id)
