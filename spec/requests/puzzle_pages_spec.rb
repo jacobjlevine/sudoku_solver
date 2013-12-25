@@ -13,7 +13,7 @@ describe "Puzzle pages" do
     it { should have_selector "div.row", count: 9 }
     it { should have_selector "div.cell", count: 81 }
 
-    describe "solve" do
+    describe "solve should render home" do
       before { click_button "Solve" }
 
       it { should have_title "Welcome to Sudoku Solver!" }

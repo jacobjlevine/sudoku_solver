@@ -2,8 +2,10 @@ require 'spec_helper'
 
 describe Puzzle do
   describe "valid puzzle" do
-    let(:input) { Array.new(81) {1} }
-    before { @puzzle = Puzzle.new(input) }
+    before do
+      @input = Array.new(81) {0}
+      @puzzle = Puzzle.new(@input)
+    end
 
     subject { @puzzle }
 
@@ -12,7 +14,33 @@ describe Puzzle do
     it { should respond_to :solve }
     it { should respond_to :solved? }
 
+    describe "should use refresh possibilities algorithm" do
+      # test that the algorithm searches row, column, and square
+      before do
+        number = 1
+        [1,4,6,19,20,45,54,63].each do |i|
+          @input[i] = number
+          number += 1
+        end
+        @puzzle = Puzzle.new(@input)
+        @puzzle.solve
+      end
 
+      its(:output) do
+        output = @input
+        output[0] = 9
+        should eq output
+      end
+
+    end
+
+    pending "refresh possibilities should run until no more cells are solved" do
+
+    end
+
+    pending "refresh possibilities should reject puzzles it deems impossible" do
+
+    end
   end
 
   describe "invalid puzzle" do
