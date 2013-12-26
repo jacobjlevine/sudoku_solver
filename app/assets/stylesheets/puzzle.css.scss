@@ -1,6 +1,12 @@
+@import "bootstrap";
+
 // Place all the styles related to the Puzzle controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+h1, h2, .container {
+  text-align: center;
+}
 
 .cell {
   display: inline;
@@ -9,5 +15,35 @@
   input {
     height: 2em;
     width: 2em;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  &:nth-child(3n-2) {
+    input {
+      border-left: 2px solid;
+    }
+  }
+
+  &:last-child {
+    input {
+      border-right: 2px solid;
+    }
+  }
+}
+
+.btn {
+  margin: 20px;
+}
+
+.row:nth-child(3n-2) {
+  input {
+    border-top: 2px solid;
+  }
+}
+
+.row:last-child {
+  input {
+    border-bottom: 2px solid;
   }
 }

@@ -13,8 +13,26 @@ describe "Puzzle pages" do
     it { should have_selector "div.row", count: 9 }
     it { should have_selector "div.cell", count: 81 }
 
-    describe "solve should render home" do
+    describe "incomplete solve should render home" do
       before { click_button "Solve" }
+
+      it { should have_title "Welcome to Sudoku Solver!" }
+      it { should have_selector "div.alert-alert" }
+    end
+
+    describe "complete solve should render home" do
+      before do
+        def gen_row(first_int)
+          (first_int-1..first_int+7).to_a.map {|val| val % 9 + 1}
+        end
+
+        input = gen_row(1) + gen_row(4) + gen_row(7) + gen_row(2) + gen_row(5) \
+          + gen_row(8) + gen_row(3) + gen_row(6) + gen_row(9)
+        input.each_with_index do |val,i|
+          fill_in "cells[#{i}]", with: val
+        end
+        click_button "Solve"
+      end
 
       it { should have_title "Welcome to Sudoku Solver!" }
       it { should have_selector "div.alert-success" }
