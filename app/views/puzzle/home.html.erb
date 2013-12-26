@@ -2,12 +2,17 @@
 <h1>Welcome to Sudoku Solver!</h1>
 <h2>Please enter your puzzle.</h2>
 <div class="puzzle">
+  <div class="container">
+      <% flash.each do |key, value| %>
+          <div class="alert alert-<%= key %>"><%= value %></div>
+      <% end %>
+  </div>
   <%= form_tag solve_path do %>
     <% 9.times do |i| %>
         <div class="row">
           <% 9.times do |j| %>
             <% @value = @puzzle.output[i*9+j] %>
-            <% @value = "" if @value == 0 %>
+            <% @value = "" if @value == "0" %>
             <div class="cell"><%= text_field_tag "cells[#{i*9+j}]", @value %></div>
           <% end %>
         </div>

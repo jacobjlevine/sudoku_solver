@@ -2,13 +2,14 @@ class Puzzle
 
   # verify input is an array of 81 integers between 0 and 9.
   # output is initially set to input and then has algorithms applied to it.
-  def initialize(input = Array.new(81) {0} )
-    if (input.is_a? Array) && (input.length == 81) && input.all? { |a| a.is_a? Integer } \
-        && input.min >= 0 && input.max <= 9
-      @input = input
-      @cells = input.map.with_index { |value,i| Cell.new(i,value) }
+  def initialize(input = Array.new(81) {"0"} )
+    @input = input
+    if (input.is_a? Array) && (input.length == 81) && input.all? {|s| s.length == 1} \
+        && input.min >= "0" && input.max <= "9"
+      @cells = input.map.with_index { |value,i| Cell.new(i,value.to_i) }
+      @valid_input = true
     else
-      raise "invalid input"
+      @valid_input = false
     end
   end
 
@@ -16,19 +17,34 @@ class Puzzle
     @input
   end
 
+  def valid_input?
+    @valid_input
+  end
+
   # read the current value of each cell and return array of ints.
   def output
-    @cells.map { |a| a.value }
+    if valid_input?
+      @cells.map { |a| a.value.to_s }
+    else
+      input
+    end
   end
 
   def solved?
-    output.all? { |a| a >= 1 && a <= 9 }
+    if valid_input?
+      output.all? { |a| a >= "1" && a <= "9" }
+    else
+      false
+    end
   end
 
   def solve
-    # apply algorithms here
-    while refresh_possibilities
+    if valid_input?
+      # apply algorithms here
+      while refresh_possibilities
+      end
     end
+    valid_input?
   end
 
   private

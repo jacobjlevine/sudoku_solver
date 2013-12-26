@@ -17,6 +17,30 @@ describe "Puzzle pages" do
       before { click_button "Solve" }
 
       it { should have_title "Welcome to Sudoku Solver!" }
+      it { should have_selector "div.alert-success" }
+    end
+
+    describe "invalid inputs" do
+
+      describe "numbers out of range" do
+        before do
+          fill_in "cells[0]", with: "12"
+          click_button "Solve"
+        end
+
+        it { should have_title "Welcome to Sudoku Solver!" }
+        it { should have_selector "div.alert-error" }
+      end
+
+      describe "letters" do
+        before do
+          fill_in "cells[0]", with: "a"
+          click_button "Solve"
+        end
+
+        it { should have_title "Welcome to Sudoku Solver!" }
+        it { should have_selector "div.alert-error" }
+      end
     end
   end
 end

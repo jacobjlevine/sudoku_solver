@@ -4,17 +4,18 @@ class PuzzleController < ApplicationController
   end
 
   def solve
-    cells = Array.new
-    params[:cells].each do |key, value|
-      begin
-        cells << value.to_i
-      rescue Exception=>e
-        puts e
-        raise "invalid input"
-      end
-    end
+    cells = params[:cells].map {|key, value| value.blank? ? "0" : value }
     @puzzle = Puzzle.new(cells)
-    @puzzle.solve
+    if @puzzle.valid_input?
+      @puzzle.solve
+      if @puzzle.solved?
+        flash.now[:success] = "puzzle solved!"
+      else
+        flash.now[:alert] = "puzzle unsolved"
+      end
+    else
+      flash.now[:error] = "invalid input"
+    end
     render "home"
   end
 end
