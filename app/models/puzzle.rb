@@ -43,6 +43,7 @@ class Puzzle
       # apply algorithms here
       while refresh_possibilities
       end
+      possible_locations
     end
     valid_input?
   end
@@ -56,8 +57,9 @@ class Puzzle
     success = false
     @cells.each do |cell|
       if cell.value == 0
-        id = cell.id
-        forbidden_values = (get_row_values id) + (get_column_values id) + (get_square_values id)
+        cell_id = cell.id
+        forbidden_values = (get_values cell_id, :row) + (get_values cell_id, :column) \
+                            + (get_values cell_id, :square)
         cell.forbidden_values(forbidden_values)
         success = true if cell.value != 0
       end
@@ -65,32 +67,47 @@ class Puzzle
     success
   end
 
-  def get_row_values(id)
-    row = @cells[id].row
-    ids_in_row = ((row-1)*9..row*9-1).to_a
-    cells_in_row = ids_in_row.map {|i| @cells[i]}
-    get_values(cells_in_row)
+  # goes through each row, column, and square and identifies if
+  # there are any possible values that only have one possible
+  # cell in which they can reside; if the algorithm successfully
+  # identifies the value of any cells, return true
+  def possible_locations
+    success = false
   end
 
-  def get_column_values(id)
-    column = @cells[id].column
-    ids_in_column = (column-1..80).step(9).to_a
-    cells_in_column = ids_in_column.map {|i| @cells[i]}
-    get_values(cells_in_column)
+  # set can be :row, :column, or :square; method returns the solved
+  # values in the same set as the cell with cell_id.
+  def get_values(cell_id, set)
+    cell = @cells[cell_id]
+    if set == :row
+      set_num = cell.row
+    elsif set == :column
+      set_num = cell.column
+    elsif set == :square
+      set_num = cell.square
+    else
+      raise "invalid :set"
+    end
+    cells_in_set = get_cells(set, set_num)
+    cells_in_set.map {|cell| cell.value}
   end
 
-  def get_square_values(id)
-    square = @cells[id].square
-    square_row = (square + 2) / 3
-    square_column = (square + 2) % 3
-    # x is the top leftmost cell in the square
-    x = (square_row - 1) * 27 + (square_column * 3)
-    ids_in_square = (x..x+2).to_a + (x+9..x+11).to_a + (x+18..x+20).to_a
-    cells_in_square = ids_in_square.map {|i| @cells[i]}
-    get_values(cells_in_square)
-  end
-
-  def get_values(cells)
-    cells.map {|cell| cell.value}
+  # set can be :row, :column, or :square; method returns all cells in
+  # the specified set (e.g. get_cells(:row,3) => cells in the 3rd row)
+  def get_cells(set, set_num)
+    if set == :row
+      ids_in_set = ((set_num-1)*9..set_num*9-1).to_a
+    elsif set == :column
+      ids_in_set = (set_num-1..80).step(9).to_a
+    elsif set == :square
+      square_row = (set_num + 2) / 3
+      square_column = (set_num + 2) % 3
+      # x is the top leftmost cell in the square
+      x = (square_row - 1) * 27 + (square_column * 3)
+      ids_in_set = (x..x+2).to_a + (x+9..x+11).to_a + (x+18..x+20).to_a
+    else
+      raise "invalid :set"
+    end
+    ids_in_set.map {|i| @cells[i]}
   end
 end

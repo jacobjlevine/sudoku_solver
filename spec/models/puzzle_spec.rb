@@ -57,6 +57,22 @@ describe Puzzle do
     pending "refresh possibilities should reject puzzles it deems impossible" do
 
     end
+
+    describe "should use possible locations algorithm" do
+      before do
+        modifications = {"0"=>"1", "1"=>"2", "2"=>"3", "3"=>"4", "4"=>"5",
+                         "6"=>"6", "14"=>"9", "34"=>"9"}
+        modifications.each {|key,value| @input[key.to_i] = value}
+        @puzzle = Puzzle.new(@input)
+        @puzzle.solve
+      end
+
+      its(:output) do
+        output = @input
+        output[8] = "9"
+        should eq output
+      end
+    end
   end
 
   describe "invalid puzzle" do
