@@ -73,6 +73,33 @@ describe Puzzle do
         should eq output
       end
     end
+
+    describe "possible locations should run until no more cells are solved" do
+      before do
+        modifications = {"0"=>"1", "9"=>"2", "18"=>"3", "27"=>"4", "36"=>"5",
+                          "46"=>"9", "54"=>"6", "61"=>"7", "66"=>"9", "73"=>"1",
+                          "74"=>"2", "75"=>"3", "77"=>"4", "78"=>"5"}
+        modifications.each {|key,value| @input[key.to_i] = value}
+        @puzzle = Puzzle.new(@input)
+        @puzzle.solve
+      end
+
+      its(:output) do
+        output = @input
+        output[72] = "9"
+        output[76] = "7"
+        should eq output
+      end
+    end
+
+    pending "possible locations should reject puzzles it deems impossible" do
+
+    end
+
+    pending "should use miniset algorithm" do
+
+    end
+
   end
 
   describe "invalid puzzle" do

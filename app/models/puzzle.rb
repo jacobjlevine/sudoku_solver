@@ -40,15 +40,16 @@ class Puzzle
 
   def solve
     if valid_input?
-      # apply algorithms here
-      while refresh_possibilities
+      # apply algorithms here; run algorithms in order until one of them
+      # returns true; then run algorithms again
+      if refresh_possibilities || possible_locations
+        solve
       end
-      possible_locations
     end
     valid_input?
   end
 
-  private
+  #private
 
   # goes through each cell in the puzzle, eliminates impossible
   # values from the possibilities array; if the algorithm
@@ -58,8 +59,8 @@ class Puzzle
     @cells.each do |cell|
       if cell.value == 0
         cell_id = cell.id
-        forbidden_values = (get_values cell_id, :row) + (get_values cell_id, :column) \
-                            + (get_values cell_id, :square)
+        forbidden_values = (get_forbidden_values cell_id, :row) + (get_forbidden_values cell_id, :column) \
+                            + (get_forbidden_values cell_id, :square)
         cell.forbidden_values(forbidden_values)
         success = true if cell.value != 0
       end
@@ -73,11 +74,29 @@ class Puzzle
   # identifies the value of any cells, return true
   def possible_locations
     success = false
+    sets = [:row,:column,:square]
+    nums = (1..9).to_a
+    sets.each do |set|
+      nums.each do |num|
+        cells = get_cells set, num
+        solved_values = get_values cells
+        unsolved_values = nums - solved_values
+        # check if any values only have one possible cell
+        unsolved_values.each do |val|
+          possible_cells = cells.select {|cell| val.in? cell.possibilities}
+          if possible_cells.length == 1
+            possible_cells[0].possibilities = [val]
+            success = true
+          end
+        end
+      end
+    end
+    success
   end
 
   # set can be :row, :column, or :square; method returns the solved
   # values in the same set as the cell with cell_id.
-  def get_values(cell_id, set)
+  def get_forbidden_values(cell_id, set)
     cell = @cells[cell_id]
     if set == :row
       set_num = cell.row
@@ -89,7 +108,11 @@ class Puzzle
       raise "invalid :set"
     end
     cells_in_set = get_cells(set, set_num)
-    cells_in_set.map {|cell| cell.value}
+    get_values(cells_in_set)
+  end
+
+  def get_values(cells)
+    cells.map {|cell| cell.value}
   end
 
   # set can be :row, :column, or :square; method returns all cells in

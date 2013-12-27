@@ -4,7 +4,7 @@ class Cell
   def initialize(id, value)
     @id = id
     @value = value
-    @possibilities = (value == 0 ? (1..9).to_a : value)
+    @possibilities = (value == 0 ? (1..9).to_a : [value])
   end
 
   def id
